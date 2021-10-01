@@ -122,6 +122,7 @@ const addMetadata = (_dna, _edition) => {
   let tempMetadata = {};
   tempMetadata[sha1(_dna.join(""))] = {};
   tempMetadata[sha1(_dna.join(""))][_edition] = {
+    ...attributesList,
     description: description,
     IPFSClone: "ipfs://QmVWqWAWf6MQAouEEvCo9YjEUgGKJ5JxeZm4eVou6PJ7jV",
     files: [
