@@ -108,27 +108,47 @@ const drawBackground = () => {
 
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
-  let tempMetadata = {
-    dna: sha1(_dna.join("")),
-    name: `#${_edition}`,
+  // let tempMetadata = {
+  //   dna: sha1(_dna.join("")),
+  //   name: `#${_edition}`,
+  //   description: description,
+  //   image: `${baseUri}/${_edition}.png`,
+  //   edition: _edition,
+  //   date: dateTime,
+  //   ...extraMetadata,
+  //   attributes: attributesList,
+  //   compiler: "HashLips Art Engine",
+  // };
+  let tempMetadata = {};
+  tempMetadata[sha1(_dna.join(""))] = {};
+  tempMetadata[sha1(_dna.join(""))][_edition] = {
     description: description,
-    image: `${baseUri}/${_edition}.png`,
-    edition: _edition,
-    date: dateTime,
-    ...extraMetadata,
-    attributes: attributesList,
-    compiler: "HashLips Art Engine",
+    IPFSClone: "ipfs://QmVWqWAWf6MQAouEEvCo9YjEUgGKJ5JxeZm4eVou6PJ7jV",
+    files: [
+      {
+        mediaType: "text/html",
+        name: _edition,
+        src: [
+          "data:image/png;base64,PCFET0NUWVBFIGh0bWw+PG1ldGEgY2hhcnNldD0idX",
+          "RmLTgiLz48Ym9keSBzdHlsZT0ibWFyZ2luOjA7Ij48Y2FudmFzIHN0eWxlPSJwYW",
+        ],
+      },
+    ],
   };
+
   metadataList.push(tempMetadata);
   attributesList = [];
 };
 
 const addAttributes = (_element) => {
   let selectedElement = _element.layer.selectedElement;
-  attributesList.push({
-    trait_type: _element.layer.name,
-    value: selectedElement.name,
-  });
+  let el = {};
+  el[_element.layer.name] = selectedElement.name;
+  attributesList.push(el);
+  // attributesList.push({
+  //   trait_type: _element.layer.name,
+  //   value: selectedElement.name,
+  // });
 };
 
 const loadLayerImg = async (_layer) => {
@@ -192,7 +212,13 @@ const writeMetaData = (_data) => {
 };
 
 const saveMetaDataSingleFile = (_editionCount) => {
-  let metadata = metadataList.find((meta) => meta.edition == _editionCount);
+  // let metadata = metadataList.find((meta) => meta.edition == _editionCount);
+  let metadata = metadataList.find((meta) => {
+    console.log(meta);
+    let [dna] = Object.keys(meta);
+    let [_edition] = Object.keys(meta[dna]);
+    return _edition == _editionCount;
+  });
   debugLogs
     ? console.log(
         `Writing metadata for ${_editionCount}: ${JSON.stringify(metadata)}`
