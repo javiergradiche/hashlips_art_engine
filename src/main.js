@@ -124,14 +124,15 @@ const addMetadata = (_dna, _edition) => {
   tempMetadata[sha1(_dna.join(""))][_edition] = {
     ...attributesList,
     description: description,
-    IPFSClone: "ipfs://QmVWqWAWf6MQAouEEvCo9YjEUgGKJ5JxeZm4eVou6PJ7jV",
+    // IPFSClone: "ipfs://QmVWqWAWf6MQAouEEvCo9YjEUgGKJ5JxeZm4eVou6PJ7jV",
     files: [
       {
         mediaType: "text/html",
         name: _edition,
         src: [
-          "data:image/png;base64,PCFET0NUWVBFIGh0bWw+PG1ldGEgY2hhcnNldD0idX",
-          "RmLTgiLz48Ym9keSBzdHlsZT0ibWFyZ2luOjA7Ij48Y2FudmFzIHN0eWxlPSJwYW",
+          encodeImageFileAsURL(`${buildDir}/images/${_edition}.png`),
+          // "data:image/png;base64,PCFET0NUWVBFIGh0bWw+PG1ldGEgY2hhcnNldD0idX",
+          // "RmLTgiLz48Ym9keSBzdHlsZT0ibWFyZ2luOjA7Ij48Y2FudmFzIHN0eWxlPSJwYW",
         ],
       },
     ],
@@ -141,11 +142,31 @@ const addMetadata = (_dna, _edition) => {
   attributesList = [];
 };
 
+const encodeImageFileAsURL = (file) => {
+  // read binary data
+  var bitmap = fs.readFileSync(file);
+  // convert binary data to base64 encoded string
+  let bufStr = new Buffer(bitmap).toString("base64");
+
+  return chunkSubstr(bufStr, 65);
+};
+
+const chunkSubstr = (str, size) => {
+  const numChunks = Math.ceil(str.length / size);
+  const chunks = new Array(numChunks);
+
+  for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    chunks[i] = str.substr(o, size);
+  }
+
+  return chunks;
+};
+
 const addAttributes = (_element) => {
   let selectedElement = _element.layer.selectedElement;
-  let el = {};
-  el[_element.layer.name] = selectedElement.name;
-  attributesList.push(el);
+  // let el = {};
+  // el[_element.layer.name] = selectedElement.name;
+  attributesList[_element.layer.name] = selectedElement.name;
   // attributesList.push({
   //   trait_type: _element.layer.name,
   //   value: selectedElement.name,
