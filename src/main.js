@@ -152,7 +152,7 @@ const encodeImageFileAsURL = (file) => {
 };
 
 const chunkSubstr = (bufStr, size) => {
-  str = "data:image/png;base64," + bufStr;
+  let str = "data:image/png;base64," + bufStr;
   const numChunks = Math.ceil(str.length / size);
   const chunks = new Array(numChunks);
 
