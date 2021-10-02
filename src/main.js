@@ -127,7 +127,7 @@ const addMetadata = (_dna, _edition) => {
     // IPFSClone: "ipfs://QmVWqWAWf6MQAouEEvCo9YjEUgGKJ5JxeZm4eVou6PJ7jV",
     files: [
       {
-        mediaType: "text/html",
+        mediaType: "image/png",
         name: _edition,
         src: [
           encodeImageFileAsURL(`${buildDir}/images/${_edition}.png`),
@@ -151,7 +151,8 @@ const encodeImageFileAsURL = (file) => {
   return chunkSubstr(bufStr, 65);
 };
 
-const chunkSubstr = (str, size) => {
+const chunkSubstr = (bufStr, size) => {
+  str = "data:image/png;base64," + bufStr;
   const numChunks = Math.ceil(str.length / size);
   const chunks = new Array(numChunks);
 
